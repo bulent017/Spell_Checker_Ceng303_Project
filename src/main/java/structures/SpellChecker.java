@@ -53,4 +53,30 @@ public class SpellChecker {
     public boolean isMisspelled(String word) {
         return !dictionary.contains(word);
     }
+
+    /**
+     * Checker whether two strings are anagram.
+     * @param word1 - first string
+     * @param word2 - second string
+     * @return true if they are anagram, else false.
+     */
+    private boolean areTheyAnagram(String word1, String word2) {
+
+        if ( word1.length() != word2.length() )
+            return false;
+
+        int[] letterFrequencies = new int[26];
+        for (int i = 0; i < word1.length(); i++) {
+
+            if ( !Character.isLetter(word1.charAt(i)) || !Character.isLetter(word2.charAt(i)) )
+                continue;
+
+            letterFrequencies[word1.charAt(i) - 'a']++;
+            letterFrequencies[word2.charAt(i) - 'a']--;
+        }
+
+        return IntStream.range(0, 26).noneMatch(i -> letterFrequencies[i] != 0);
+    }
+
+
 }

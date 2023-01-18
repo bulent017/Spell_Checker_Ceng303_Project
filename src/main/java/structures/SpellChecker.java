@@ -125,4 +125,62 @@ public class SpellChecker {
         // The distance is the value in the bottom right corner of the matrix
         return dpMatrix[word1.length()][word2.length()];
     }
+    
+    /**
+     * It filters words below the threshold value using the Levenshtein algorithm. 
+     * It then calculates the distance between the filtered words and the typed word. 
+     * The calculation of anagram strings can be done differently.
+     * @param word - user typed string
+     * @return candidate words as suggestions
+     */
+    public List<Suggestion> getSuggestions(String word) {
+        
+        List<Suggestion> suggestions = new ArrayList<>(); // Suggestions List
+
+        // Calculate the distance between the misspelled word and each word in the dictionary
+        for (String dictWord : dictionary) {
+            int levenshteinDistance = getLevenstheinDistance(word, dictWord);
+            
+            // Add the dictionary word to the list if it is within the threshold
+            if (levenshteinDistance <= THRESHOLD) {
+
+                double distance = 0;
+                int min = Math.min(word.length(), dictWord.length());
+                
+                for (int i = 0; i < min; i++) {
+                    
+                    Key key1 = keyboard.keyboardLayout.get(word.charAt(i));
+                    Key key2 = keyboard.keyboardLayout.get(dictWord.charAt(i));
+
+                    // If the character is not a letter don't take into account
+                    if ( key1 == null || key2 == null ) 
+                        continue;
+                    
+                    distance += key1.getDistance(key2);
+                }
+                
+                String maxWord = word.length() > dictWord.length() ? word : dictWord;
+                
+                // Calculate extra letters distance
+                for (int i = min; i < maxWord.length(); i++) {
+                    Key key = keyboard.keyboardLayout.get(maxWord.charAt(i));
+                    distance += key.getDistance(new Key('0', 0, 0));
+                }
+
+                // If the words are anagram change the distance.
+                if( areTheyAnagram(word, dictWord) )
+                    distance = levenshteinDistance * 0.49;
+                
+                suggestions.add(new Suggestion(dictWord, distance));
+            }
+        }
+
+        // Sort the list of suggestions based on their distance
+        Collections.sort(suggestions);
+
+        if( suggestions.size() > 10 )
+            suggestions = suggestions.subList(0, 10);
+        
+        return suggestions;
+    }
 }

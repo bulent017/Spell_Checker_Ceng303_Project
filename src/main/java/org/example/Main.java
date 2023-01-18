@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.Scanner;
 import structures.SpellChecker;
+import structures.Suggestion;
 import java.util.List;
 
 public class Main {
@@ -38,5 +39,6 @@ public class Main {
 
             System.out.print("\nEnter a text to check misspellings (To exit type '*'): ");
             line = scanner.nextLine();
+        }
     }
 }

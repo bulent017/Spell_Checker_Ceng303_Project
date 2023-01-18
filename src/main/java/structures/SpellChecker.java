@@ -43,5 +43,14 @@ public class SpellChecker {
             System.out.println("An error occurred while creating dictionary!");
         }
     }
-  
+    
+  /**
+     * Method to check if a word is misspelled
+     * @param word - user typed word.
+     * @return whether the typed word is misspelled.
+     */
+    // 
+    public boolean isMisspelled(String word) {
+        return !dictionary.contains(word);
+    }
 }
